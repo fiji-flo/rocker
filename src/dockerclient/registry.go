@@ -55,7 +55,7 @@ func RegistryListTags(image *imagename.ImageName, auth *docker.AuthConfiguration
 
 	// XXX: AWS ECR Registry API v2 does not support listing tags
 	// wo we just return a single image tag if it exists and no wildcards used
-	if image.IsECR() {
+	if image.SupportsWildcards() {
 		log.Debugf("ECR detected %s", registry)
 		if !image.IsStrict() {
 			return nil, fmt.Errorf("Amazon ECR does not support tags listing, therefore image wildcards are not supported, sorry: %s", image)
@@ -95,7 +95,6 @@ func RegistryListTags(image *imagename.ImageName, auth *docker.AuthConfiguration
 			images = append(images, candidate)
 		}
 	}
-
 	return
 }
 

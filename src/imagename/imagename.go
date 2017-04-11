@@ -52,6 +52,7 @@ const (
 
 var (
 	ecrRe = regexp.MustCompile("^(\\d+)\\.dkr\\.ecr\\.([^\\.]+)\\.amazonaws\\.com$")
+	gcrRe = regexp.MustCompile("^(.*\\.)?gcr.io$")
 )
 
 // ImageName is the data structure with describes docker image name
@@ -243,6 +244,12 @@ func (img ImageName) HasVersion() bool {
 // golang        == false
 func (img ImageName) HasVersionRange() bool {
 	return img.Version != nil
+}
+
+// SupportsWildcards returns whether a registry supports tag listing
+func (img ImageName) SupportsWildcards() bool {
+	return ecrRe.MatchString(img.Registry) ||
+		gcrRe.MatchString(img.Registry)
 }
 
 // IsECR returns true if the registry is AWS ECR
